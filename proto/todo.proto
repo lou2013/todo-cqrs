@@ -7,18 +7,18 @@ import "google/protobuf/empty.proto";
 
 service todosService {
     //crud todo
-    rpc findTodoById (TodoId) returns (Todo);
+    rpc findTodoById (FindById) returns (Todo);
     rpc findAllTodo (google.protobuf.Empty) returns (TodoAllDto);
     rpc createTodo(CreateTodoDto) returns (Todo);
     rpc updateTodo(UpdateTodoDto) returns (Todo);
     rpc deleteTodo(DeleteTodoDto) returns (Todo);
     rpc findPaginatedTodo (PaginatedRequestDto) returns (PaginatedTodoResponseDto);
 
+    rpc findTodoListById(FindById) returns (TodoList);
+    rpc findAllTodoList(google.protobuf.Empty) returns (TodoListAllDto);
     rpc createTodoList(CreateTodoList) returns (TodoList);
-    rpc updateTodoList(CreateTodoList) returns (TodoList);
-    rpc deleteTodoList(CreateTodoList) returns (TodoList);
-    rpc findTodoListById(CreateTodoList) returns (TodoList);
-    rpc findAllTodoList(google.protobuf.Empty) returns (TodoList);
+    rpc updateTodoList(UpdateTodoList) returns (TodoList);
+    rpc deleteTodoList(DeleteTodoListDto) returns (TodoList);
     rpc findPaginatedTodoList(PaginatedRequestDto) returns (TodoList);
 }
 
@@ -32,7 +32,7 @@ message PaginatedTodoResponseDto {
 
 }
 
-message TodoId {
+message FindById {
     string id = 1;
 }
 
@@ -79,4 +79,12 @@ message CreateTodoList {
 message UpdateTodoList { 
     string name = 2;
     string description =3;
+}
+
+message DeleteTodoListDto{
+    required string id=1;
+}
+
+message TodoListAllDto { 
+    repeated TodoList items =1;
 }

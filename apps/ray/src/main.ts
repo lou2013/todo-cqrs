@@ -1,19 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { NestMicroserviceOptions } from '@nestjs/common/interfaces/microservices/nest-microservice-options.interface';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { GateWayModule } from './gateway.module';
+import { SerializerInterceptor } from './common/interceptors/serializer.interceptor';
+import { GlobalValidationPipe } from './common/pipes/global-validation.pipe';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      transport: Transport.GRPC,
-      options: {
-        package: 'todo',
-        protoPath: 'hero/hero.proto',
-      },
-    },
-  );
-  // await app.listen(3000);
+  const app = await NestFactory.create(GateWayModule);
+  app.useGlobalInterceptors(SerializerInterceptor(app));
+  app.useGlobalPipes(GlobalValidationPipe);
+  await app.listen(3000);
 }
 bootstrap();

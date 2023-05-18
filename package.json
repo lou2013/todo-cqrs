@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/ray/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/ray/test/jest-e2e.json",
+    "proto:todo": "protoc --plugin=node_modules/.bin/protoc-gen-ts_proto -I=./proto/todo.proto --ts_proto_out=apps/todo/ ./proto/todo.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.8.14",
@@ -26,9 +27,13 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/cqrs": "^9.0.3",
     "@nestjs/microservices": "^9.4.1",
+    "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "ts-proto": "^1.147.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
