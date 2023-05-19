@@ -10,8 +10,16 @@ import {
   TodoListEntity,
   TodoListEntitySchema,
 } from './infrastructure/entity/TodoListEntity';
+import { ConfigModule } from '@nestjs/config';
+import { LoadConfigs } from './shared/configs/loader/loader';
+import { MongooseLoaderModule } from './shared/db/mongodb.module';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [LoadConfigs],
+    }),
+    MongooseLoaderModule,
     MongooseModule.forFeature([
       { name: TodoEntity.name, schema: TodoEntitySchema },
       { name: TodoListEntity.name, schema: TodoListEntitySchema },

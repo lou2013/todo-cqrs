@@ -1,6 +1,6 @@
 {
   "files.exclude": {
-    "node_modules": true
+    "node_modules": false
   },
-  "cSpell.words": ["todos"]
+  "cSpell.words": ["nestjs", "todos"]
 }

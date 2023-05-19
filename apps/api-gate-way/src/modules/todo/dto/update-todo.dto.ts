@@ -1,4 +1,4 @@
-import { BaseDto } from 'apps/ray/src/common/dto/base.dto';
+import { BaseDto } from 'apps/api-gate-way/src/common/dto/base.dto';
 import { Expose } from 'class-transformer';
 import { IsInt, IsString, Min, IsOptional } from 'class-validator';
 

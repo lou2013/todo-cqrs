@@ -4,8 +4,9 @@ import { Router } from './gateway.routes';
 import { TodoGateWayModule } from './modules/todo/todo-gateway.module';
 
 @Module({
-  imports: [TodoGateWayModule, RouterModule.register(Router)],
+  imports: [RouterModule.register(Router), TodoGateWayModule],
   controllers: [],
   providers: [],
+  exports: [TodoGateWayModule],
 })
 export class GateWayModule {}

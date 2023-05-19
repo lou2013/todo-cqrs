@@ -25,7 +25,14 @@
       "entryFile": "main",
       "sourceRoot": "apps/todo/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/todo/tsconfig.app.json"
+        "tsConfigPath": "apps/todo/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "./shared/configs/*.yml",
+            "outDir": "./dist/apps/todo/shared/configs",
+            "watchAssets": true
+          }
+        ]
       }
     }
   }

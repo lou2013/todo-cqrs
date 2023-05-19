@@ -1,18 +1,12 @@
-import {
-  Controller,
-  Get,
-  OnModuleInit,
-  Post,
-  Patch,
-  Delete,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body } from '@nestjs/common';
 import { TodoGateWayService } from '../service/todo-gateway.service';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
 @Controller()
 export class TodoGateWayController {
+  constructor(private readonly todoGateWayService: TodoGateWayService) {}
+
   @Get('/:id')
   findById(): string {
     return '';

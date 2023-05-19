@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+  mongo:
+    image: mongo:4.4.6
+    container_name: ray_mongo
+    command: mongod --replSet pay-replica-set
+    restart: always
+    ports:
+      - 30001:27017
+    volumes:
+      - ray_mongo:/data/db
+    environment:
+      - TZ=Asia/Tehran
+
+
+
+volumes:
+  ray_mongo:

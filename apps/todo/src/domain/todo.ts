@@ -1,6 +1,6 @@
 export interface Todo {
-  move(): void; //each have their own events
-  delete(): void;
-  update(): void;
-  commit(): void;
+  id: string;
+  todoList: string;
+  priority: number;
+  title: string;
 }
