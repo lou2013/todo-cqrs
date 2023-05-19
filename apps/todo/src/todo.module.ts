@@ -5,11 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import {
   TodoEntity,
   TodoEntitySchema,
-} from './infrastructure/entity/TodoEntity';
+} from './infrastructure/entity/todo-entity';
 import {
   TodoListEntity,
   TodoListEntitySchema,
-} from './infrastructure/entity/TodoListEntity';
+} from './infrastructure/entity/todo-list-entity';
 import { ConfigModule } from '@nestjs/config';
 import { LoadConfigs } from './shared/configs/loader/loader';
 import { MongooseLoaderModule } from './shared/db/mongodb.module';

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { TodoQuery } from '../../application/query/todo-query';
-import { TodoEntity } from '../entity/TodoEntity';
+import { TodoQuery } from '../../application/query/interface/todo-query';
+import { TodoEntity } from '../entity/todo-entity';
 import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { FindTodoByIdResult } from '../../application/query/find-todo-by-id-result';
 import { FindAllTodoResult } from '../../application/query/find-all-todo-result';
 import { FindPaginateTodoResult } from '../../application/query/find-paginate-todo-result';
-import { TodoListEntity } from '../entity/TodoListEntity';
+import { TodoListEntity } from '../entity/todo-list-entity';
 import { FindAllTodoListResult } from '../../application/query/find-all-todo-list-result';
 import { FindPaginateTodoListResult } from '../../application/query/find-paginate-todo-list-result';
 import { FindTodoListByIdResult } from '../../application/query/find-todo-list-by-id';
@@ -20,7 +20,11 @@ export class TodoQueryImplementation implements TodoQuery {
   private readonly todoListEntity: PaginateModel<TodoListEntity>;
 
   async findAllTodo(): Promise<FindAllTodoResult> {
-    const todos = await this.todoEntity.find();
+    const todos = await this.todoEntity.find(
+      {},
+      {},
+      { sort: { priority: 1, _id: 1 } },
+    );
 
     return new FindAllTodoResult({ items: todos.map((t) => t.toObject()) });
   }
@@ -32,7 +36,10 @@ export class TodoQueryImplementation implements TodoQuery {
     page: number;
     limit: number;
   }): Promise<FindPaginateTodoResult> {
-    const result = await this.todoEntity.paginate({}, { page, limit });
+    const result = await this.todoEntity.paginate(
+      {},
+      { page, limit, sort: { priority: 1, _id: 1 } },
+    );
     return new FindPaginateTodoResult({
       items: result.docs.map((t) => t.toObject()),
       hasNextPage: result.hasNextPage,

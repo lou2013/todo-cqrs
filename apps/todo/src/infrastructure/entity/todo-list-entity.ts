@@ -1,8 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { BaseEntity } from './BaseEntity';
-import { Types, ObjectId } from 'mongoose';
+import { BaseEntity } from './base-entity';
+import { Types } from 'mongoose';
 import { Collection } from '../../shared/enum/collection.enum';
-import { TodoEntity } from './TodoEntity';
+import { TodoEntity } from './todo-entity';
 @Schema({ collection: Collection.TodoList })
 export class TodoListEntity extends BaseEntity {
   @Prop({ type: String })
@@ -12,7 +12,7 @@ export class TodoListEntity extends BaseEntity {
   description: string;
 
   @Prop({ type: [Types.ObjectId], ref: Collection.TodoList, default: [] })
-  todos: ObjectId[] | TodoEntity[];
+  todos: Types.ObjectId[] | TodoEntity[];
 }
 
 export const TodoListEntitySchema =
