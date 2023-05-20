@@ -1,9 +1,9 @@
-import { FindAllTodoListResult } from '../find-all-todo-list-result';
-import { FindAllTodoResult } from '../find-all-todo-result';
-import { FindPaginateTodoListResult } from '../find-paginate-todo-list-result';
-import { FindPaginateTodoResult } from '../find-paginate-todo-result';
-import { FindTodoByIdResult } from '../find-todo-by-id-result';
-import { FindTodoListByIdResult } from '../find-todo-list-by-id';
+import { FindAllTodoListResult } from './result/find-all-todo-list-result';
+import { FindAllTodoResult } from './result/find-all-todo-result';
+import { FindPaginateTodoListResult } from './result/find-paginate-todo-list-result';
+import { FindPaginateTodoResult } from './result/find-paginate-todo-result';
+import { FindTodoByIdResult } from './result/find-todo-by-id-result';
+import { FindTodoListByIdResult } from './result/find-todo-list-by-id-result';
 
 export interface TodoQuery {
   findTodoById(id: string): Promise<FindTodoByIdResult>;

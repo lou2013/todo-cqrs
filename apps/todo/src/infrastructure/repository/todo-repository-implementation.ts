@@ -9,7 +9,7 @@ import { TodoListEntity } from '../entity/todo-list-entity';
 import * as mongoose from 'mongoose';
 import { isArray } from 'class-validator';
 import { NotFoundError } from '../../shared/errors/not-found-error';
-
+import { CodeError } from '../../shared/enum/code-error.enum';
 @Injectable()
 export class TodoRepositoryImplementation implements TodoRepository {
   @InjectModel(TodoEntity.name)
@@ -18,7 +18,7 @@ export class TodoRepositoryImplementation implements TodoRepository {
   @InjectModel(TodoListEntity.name)
   private readonly todoListEntity: PaginateModel<TodoListEntity>;
 
-  async newId(): Promise<mongoose.Types.ObjectId> {
+  newId(): mongoose.Types.ObjectId {
     return new mongoose.Types.ObjectId();
   }
 
@@ -29,7 +29,10 @@ export class TodoRepositoryImplementation implements TodoRepository {
     return (await Promise.all(promises)).map((t) => t.toObject());
   }
 
-  async updateTodo(id: string, data: Partial<Todo>): Promise<Todo> {
+  async updateTodo(
+    id: string,
+    data: Partial<Omit<Todo, 'todoList'>>,
+  ): Promise<Todo> {
     return (
       await this.todoEntity.findOneAndUpdate({ _id: id }, { $set: { ...data } })
     ).toObject();
@@ -38,7 +41,11 @@ export class TodoRepositoryImplementation implements TodoRepository {
   async moveTodo(id: string, toTodoListId: string): Promise<Todo> {
     const todo = await this.todoEntity.findById(id);
     const session = await this.todoEntity.db.startSession({});
-    if (!todo) throw new NotFoundError('todo Not found');
+    if (!todo)
+      throw new NotFoundError({
+        message: 'todo Not found',
+        code: CodeError.NOT_FOUND,
+      });
     if (todo.todoList) {
       await this.todoListEntity.findOneAndUpdate(
         { _id: todo.todoList },
@@ -51,7 +58,11 @@ export class TodoRepositoryImplementation implements TodoRepository {
       { $addToSet: { todos: todo.id } },
       { session },
     );
-    if (!newTodoList) throw new NotFoundError('todoList Not found');
+    if (!newTodoList)
+      throw new NotFoundError({
+        message: 'todoList Not found',
+        code: CodeError.NOT_FOUND,
+      });
     todo.todoList = newTodoList.id;
     await todo.save();
     return todo.toObject();

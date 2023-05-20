@@ -1,13 +1,14 @@
 import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GrpcMethod } from '@nestjs/microservices';
-import { Empty } from 'apps/todo/proto/google/protobuf/empty.pb';
+import { Empty } from 'lib/proto/todo/google/protobuf/empty.pb';
 import {
   CreateTodoDto,
   CreateTodoList,
   DeleteTodoDto,
   DeleteTodoListDto,
   FindById,
+  MoveTodoDto,
   PaginatedRequestDto,
   PaginatedTodoResponseDto,
   Todo,
@@ -18,8 +19,19 @@ import {
   TODOS_SERVICE_NAME,
   UpdateTodoDto,
   UpdateTodoList,
-} from 'apps/todo/proto/todo.pb';
-import { Observable } from 'rxjs';
+} from 'lib/proto/todo/todo.pb';
+import { CreateTodoCommand } from '../application/command/interfaces/create-todo-command';
+import { CreateTodoListCommand } from '../application/command/interfaces/create-todo-list-command';
+import { DeleteTodoCommand } from '../application/command/interfaces/delete-todo-command';
+import { DeleteTodoListCommand } from '../application/command/interfaces/delete-todo-list-command';
+import { UpdateTodoCommand } from '../application/command/interfaces/update-todo-command';
+import { UpdateTodoListCommand } from '../application/command/interfaces/update-todo-list-command';
+import { FindAllTodoList } from '../application/query/handler/find-all-todo-list.handler';
+import { FindAllTodoQuery } from '../application/query/interface/find-all-todo.query';
+import { FindPaginateTodoListQuery } from '../application/query/interface/find-paginate-todo-list.query';
+import { FindPaginateTodoQuery } from '../application/query/interface/find-paginate-todo.query';
+import { FindTodoByIdQuery } from '../application/query/interface/find-todo-by-id.query';
+import { FindTodoListByIdQuery } from '../application/query/interface/find-todo-list-by-id.query';
 
 @Controller()
 export class TodoServiceControllerImplementation
@@ -30,82 +42,88 @@ export class TodoServiceControllerImplementation
     private readonly queryBus: QueryBus,
   ) {}
 
+  @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
+  moveTodo(request: MoveTodoDto): void {
+    //
+  }
+
   @GrpcMethod(TODOS_SERVICE_NAME, 'findTodoById')
-  findTodoById(request: FindById): Todo | Observable<Todo> | Promise<Todo> {
-    throw new Error('Method not implemented.');
+  async findTodoById(request: FindById): Promise<Todo> {
+    return await this.queryBus.execute(new FindTodoByIdQuery(request.id));
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findAllTodo')
-  findAllTodo(
-    request: Empty,
-  ): TodoAllDto | Observable<TodoAllDto> | Promise<TodoAllDto> {
-    throw new Error('Method not implemented.');
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
+  async findAllTodo(request: Empty): Promise<TodoAllDto> {
+    return { items: await this.queryBus.execute(new FindAllTodoQuery()) };
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodo')
-  createTodo(request: CreateTodoDto): Todo | Observable<Todo> | Promise<Todo> {
-    throw new Error('Method not implemented.');
+  async createTodo(request: CreateTodoDto): Promise<Todo> {
+    return await this.commandBus.execute(
+      new CreateTodoCommand(
+        request.priority,
+        request.title,
+        request.todoListId,
+      ),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'updateTodo')
-  updateTodo(request: UpdateTodoDto): Todo | Observable<Todo> | Promise<Todo> {
-    throw new Error('Method not implemented.');
+  async updateTodo(request: UpdateTodoDto): Promise<Todo> {
+    return await this.commandBus.execute(
+      new UpdateTodoCommand(request.id, request.priority, request.title),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'deleteTodo')
-  deleteTodo(request: DeleteTodoDto): Todo | Observable<Todo> | Promise<Todo> {
-    throw new Error('Method not implemented.');
+  async deleteTodo(request: DeleteTodoDto): Promise<Todo> {
+    return await this.commandBus.execute(new DeleteTodoCommand(request.id));
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findPaginatedTodo')
-  findPaginatedTodo(
+  async findPaginatedTodo(
     request: PaginatedRequestDto,
-  ):
-    | PaginatedTodoResponseDto
-    | Observable<PaginatedTodoResponseDto>
-    | Promise<PaginatedTodoResponseDto> {
-    throw new Error('Method not implemented.');
+  ): Promise<PaginatedTodoResponseDto> {
+    return await this.queryBus.execute(
+      new FindPaginateTodoQuery(request.page, request.limit),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findTodoListById')
-  findTodoListById(
-    request: FindById,
-  ): TodoList | Observable<TodoList> | Promise<TodoList> {
-    throw new Error('Method not implemented.');
+  async findTodoListById(request: FindById): Promise<TodoList> {
+    return await this.queryBus.execute(new FindTodoListByIdQuery(request.id));
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findAllTodoList')
-  findAllTodoList(
-    request: Empty,
-  ): TodoListAllDto | Observable<TodoListAllDto> | Promise<TodoListAllDto> {
-    throw new Error('Method not implemented.');
+  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
+  async findAllTodoList(request: Empty): Promise<TodoListAllDto> {
+    return await this.queryBus.execute(new FindAllTodoList());
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodoList')
-  createTodoList(
-    request: CreateTodoList,
-  ): TodoList | Observable<TodoList> | Promise<TodoList> {
-    throw new Error('Method not implemented.');
+  async createTodoList(request: CreateTodoList): Promise<TodoList> {
+    return await this.commandBus.execute(
+      new CreateTodoListCommand(request.description, request.name),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'updateTodoList')
-  updateTodoList(
-    request: UpdateTodoList,
-  ): TodoList | Observable<TodoList> | Promise<TodoList> {
-    throw new Error('Method not implemented.');
+  async updateTodoList(request: UpdateTodoList): Promise<TodoList> {
+    return await this.commandBus.execute(
+      new UpdateTodoListCommand(request.id, request.name, request.description),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'deleteTodoList')
-  deleteTodoList(
-    request: DeleteTodoListDto,
-  ): TodoList | Observable<TodoList> | Promise<TodoList> {
-    throw new Error('Method not implemented.');
+  async deleteTodoList(request: DeleteTodoListDto): Promise<TodoList> {
+    return await this.commandBus.execute(new DeleteTodoListCommand(request.id));
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findPaginatedTodoList')
-  findPaginatedTodoList(
-    request: PaginatedRequestDto,
-  ): TodoList | Observable<TodoList> | Promise<TodoList> {
-    throw new Error('Method not implemented.');
+  async findPaginatedTodoList(request: PaginatedRequestDto): Promise<TodoList> {
+    return await this.commandBus.execute(
+      new FindPaginateTodoListQuery(request.page, request.limit),
+    );
   }
 }

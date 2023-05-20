@@ -1,11 +1,29 @@
-import { Controller, Get, Post, Patch, Delete, Body } from '@nestjs/common';
-import { TodoGateWayService } from '../service/todo-gateway.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  OnModuleInit,
+} from '@nestjs/common';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
 @Controller()
-export class TodoGateWayController {
-  constructor(private readonly todoGateWayService: TodoGateWayService) {}
+export class TodoGateWayController implements OnModuleInit {
+  // private svc: BookServiceClient;
+
+  // @Inject(BOOK_SERVICE_NAME)
+  // private readonly client: ClientGrpc;
+
+  public onModuleInit(): void {
+    // this.svc = this.client.getService<BookServiceClient>(BOOK_SERVICE_NAME);
+  }
+
+  getHello(): string {
+    return 'Hello World!';
+  }
 
   @Get('/:id')
   findById(): string {

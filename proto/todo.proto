@@ -8,16 +8,18 @@ service todosService {
   // crud todo
   rpc findTodoById(FindById) returns (Todo);
   rpc findAllTodo(google.protobuf.Empty) returns (TodoAllDto);
-  rpc createTodo(CreateTodoDto) returns (Todo);
-  rpc updateTodo(UpdateTodoDto) returns (Todo);
-  rpc deleteTodo(DeleteTodoDto) returns (Todo);
+  rpc createTodo(CreateTodoDto) returns (google.protobuf.Empty);
+  rpc updateTodo(UpdateTodoDto) returns (google.protobuf.Empty);
+  rpc deleteTodo(DeleteTodoDto) returns (google.protobuf.Empty);
   rpc findPaginatedTodo(PaginatedRequestDto) returns (PaginatedTodoResponseDto);
+  rpc moveTodo(MoveTodoDto) returns (google.protobuf.Empty);
 
+  // crud TodoList
   rpc findTodoListById(FindById) returns (TodoList);
   rpc findAllTodoList(google.protobuf.Empty) returns (TodoListAllDto);
-  rpc createTodoList(CreateTodoList) returns (TodoList);
-  rpc updateTodoList(UpdateTodoList) returns (TodoList);
-  rpc deleteTodoList(DeleteTodoListDto) returns (TodoList);
+  rpc createTodoList(CreateTodoList) returns (google.protobuf.Empty);
+  rpc updateTodoList(UpdateTodoList) returns (google.protobuf.Empty);
+  rpc deleteTodoList(DeleteTodoListDto) returns (google.protobuf.Empty);
   rpc findPaginatedTodoList(PaginatedRequestDto) returns (TodoList);
 }
 
@@ -34,19 +36,19 @@ message Todo {
   string id = 1;
   string title = 2;
   int32 priority = 3;
+  string todoListId = 4;
 }
 
 message CreateTodoDto {
   string title = 1;
-  string priority = 2;
+  int32 priority = 2;
   string todoListId = 3;
 }
 
 message UpdateTodoDto {
   string id = 1;
-  string title = 2;
-  string priority = 3;
-  string todoListId = 4;
+  optional string title = 2;
+  optional int32 priority = 3;
 }
 
 message DeleteTodoDto { string id = 1; }
@@ -66,10 +68,16 @@ message CreateTodoList {
 }
 
 message UpdateTodoList {
-  string name = 2;
-  string description = 3;
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
 }
 
 message DeleteTodoListDto { string id = 1; }
 
 message TodoListAllDto { repeated TodoList items = 1; }
+
+message MoveTodoDto {
+  string todoId = 1;
+  string newTodoListId = 2;
+}

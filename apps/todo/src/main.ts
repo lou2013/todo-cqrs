@@ -2,7 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { TodoModule } from './todo.module';
 import { join } from 'path';
-import { protoNames } from './const/proto-names';
+import { protoNames } from '../../../lib/const/proto-names';
+import { TODO_PACKAGE_NAME } from 'lib/proto/todo/todo.pb';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -10,8 +11,16 @@ async function bootstrap(): Promise<void> {
     {
       transport: Transport.GRPC,
       options: {
-        package: protoNames.todo,
-        protoPath: join(__dirname, '../../proto', protoNames.todo + '.proto'),
+        package: TODO_PACKAGE_NAME,
+        protoPath: join(
+          __dirname,
+          '..',
+          '..',
+          '..',
+          '..',
+          'proto',
+          protoNames.todo + '.proto',
+        ),
         url: '0.0.0.0:5051',
       },
     },

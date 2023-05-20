@@ -22,19 +22,19 @@ export interface Todo {
   id: string;
   title: string;
   priority: number;
+  todoListId: string;
 }
 
 export interface CreateTodoDto {
   title: string;
-  priority: string;
+  priority: number;
   todoListId: string;
 }
 
 export interface UpdateTodoDto {
   id: string;
-  title: string;
-  priority: string;
-  todoListId: string;
+  title?: string | undefined;
+  priority?: number | undefined;
 }
 
 export interface DeleteTodoDto {
@@ -58,8 +58,9 @@ export interface CreateTodoList {
 }
 
 export interface UpdateTodoList {
-  name: string;
-  description: string;
+  id: string;
+  name?: string | undefined;
+  description?: string | undefined;
 }
 
 export interface DeleteTodoListDto {
@@ -68,6 +69,11 @@ export interface DeleteTodoListDto {
 
 export interface TodoListAllDto {
   items: TodoList[];
+}
+
+export interface MoveTodoDto {
+  todoId: string;
+  newTodoListId: string;
 }
 
 export const TODO_PACKAGE_NAME = "todo";
@@ -79,23 +85,27 @@ export interface todosServiceClient {
 
   findAllTodo(request: Empty): Observable<TodoAllDto>;
 
-  createTodo(request: CreateTodoDto): Observable<Todo>;
+  createTodo(request: CreateTodoDto): Observable<Empty>;
 
-  updateTodo(request: UpdateTodoDto): Observable<Todo>;
+  updateTodo(request: UpdateTodoDto): Observable<Empty>;
 
-  deleteTodo(request: DeleteTodoDto): Observable<Todo>;
+  deleteTodo(request: DeleteTodoDto): Observable<Empty>;
 
   findPaginatedTodo(request: PaginatedRequestDto): Observable<PaginatedTodoResponseDto>;
+
+  moveTodo(request: MoveTodoDto): Observable<Empty>;
+
+  /** crud TodoList */
 
   findTodoListById(request: FindById): Observable<TodoList>;
 
   findAllTodoList(request: Empty): Observable<TodoListAllDto>;
 
-  createTodoList(request: CreateTodoList): Observable<TodoList>;
+  createTodoList(request: CreateTodoList): Observable<Empty>;
 
-  updateTodoList(request: UpdateTodoList): Observable<TodoList>;
+  updateTodoList(request: UpdateTodoList): Observable<Empty>;
 
-  deleteTodoList(request: DeleteTodoListDto): Observable<TodoList>;
+  deleteTodoList(request: DeleteTodoListDto): Observable<Empty>;
 
   findPaginatedTodoList(request: PaginatedRequestDto): Observable<TodoList>;
 }
@@ -107,25 +117,29 @@ export interface todosServiceController {
 
   findAllTodo(request: Empty): Promise<TodoAllDto> | Observable<TodoAllDto> | TodoAllDto;
 
-  createTodo(request: CreateTodoDto): Promise<Todo> | Observable<Todo> | Todo;
+  createTodo(request: CreateTodoDto): void;
 
-  updateTodo(request: UpdateTodoDto): Promise<Todo> | Observable<Todo> | Todo;
+  updateTodo(request: UpdateTodoDto): void;
 
-  deleteTodo(request: DeleteTodoDto): Promise<Todo> | Observable<Todo> | Todo;
+  deleteTodo(request: DeleteTodoDto): void;
 
   findPaginatedTodo(
     request: PaginatedRequestDto,
   ): Promise<PaginatedTodoResponseDto> | Observable<PaginatedTodoResponseDto> | PaginatedTodoResponseDto;
 
+  moveTodo(request: MoveTodoDto): void;
+
+  /** crud TodoList */
+
   findTodoListById(request: FindById): Promise<TodoList> | Observable<TodoList> | TodoList;
 
   findAllTodoList(request: Empty): Promise<TodoListAllDto> | Observable<TodoListAllDto> | TodoListAllDto;
 
-  createTodoList(request: CreateTodoList): Promise<TodoList> | Observable<TodoList> | TodoList;
+  createTodoList(request: CreateTodoList): void;
 
-  updateTodoList(request: UpdateTodoList): Promise<TodoList> | Observable<TodoList> | TodoList;
+  updateTodoList(request: UpdateTodoList): void;
 
-  deleteTodoList(request: DeleteTodoListDto): Promise<TodoList> | Observable<TodoList> | TodoList;
+  deleteTodoList(request: DeleteTodoListDto): void;
 
   findPaginatedTodoList(request: PaginatedRequestDto): Promise<TodoList> | Observable<TodoList> | TodoList;
 }
@@ -139,6 +153,7 @@ export function todosServiceControllerMethods() {
       "updateTodo",
       "deleteTodo",
       "findPaginatedTodo",
+      "moveTodo",
       "findTodoListById",
       "findAllTodoList",
       "createTodoList",

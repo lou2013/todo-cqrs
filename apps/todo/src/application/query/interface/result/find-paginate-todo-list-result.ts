@@ -1,5 +1,5 @@
 import { IQueryResult } from '@nestjs/cqrs';
-import { FindTodoListByIdResult } from './find-todo-list-by-id';
+import { FindTodoListByIdResult } from './find-todo-list-by-id-result';
 
 export class FindPaginateTodoListResult implements IQueryResult {
   items: FindTodoListByIdResult[];
