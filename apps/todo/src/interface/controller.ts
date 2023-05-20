@@ -24,6 +24,7 @@ import { CreateTodoCommand } from '../application/command/interfaces/create-todo
 import { CreateTodoListCommand } from '../application/command/interfaces/create-todo-list-command';
 import { DeleteTodoCommand } from '../application/command/interfaces/delete-todo-command';
 import { DeleteTodoListCommand } from '../application/command/interfaces/delete-todo-list-command';
+import { MoveTodoCommand } from '../application/command/interfaces/move-todo-command';
 import { UpdateTodoCommand } from '../application/command/interfaces/update-todo-command';
 import { UpdateTodoListCommand } from '../application/command/interfaces/update-todo-list-command';
 import { FindAllTodoList } from '../application/query/handler/find-all-todo-list.handler';
@@ -43,8 +44,10 @@ export class TodoServiceControllerImplementation
   ) {}
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
-  moveTodo(request: MoveTodoDto): void {
-    //
+  async moveTodo(request: MoveTodoDto): Promise<void> {
+    await this.commandBus.execute(
+      new MoveTodoCommand(request.todoId, request.newTodoListId),
+    );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findTodoById')
@@ -59,7 +62,7 @@ export class TodoServiceControllerImplementation
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodo')
-  async createTodo(request: CreateTodoDto): Promise<Todo> {
+  async createTodo(request: CreateTodoDto): Promise<void> {
     return await this.commandBus.execute(
       new CreateTodoCommand(
         request.priority,
@@ -70,14 +73,14 @@ export class TodoServiceControllerImplementation
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'updateTodo')
-  async updateTodo(request: UpdateTodoDto): Promise<Todo> {
+  async updateTodo(request: UpdateTodoDto): Promise<void> {
     return await this.commandBus.execute(
       new UpdateTodoCommand(request.id, request.priority, request.title),
     );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'deleteTodo')
-  async deleteTodo(request: DeleteTodoDto): Promise<Todo> {
+  async deleteTodo(request: DeleteTodoDto): Promise<void> {
     return await this.commandBus.execute(new DeleteTodoCommand(request.id));
   }
 
@@ -102,21 +105,21 @@ export class TodoServiceControllerImplementation
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodoList')
-  async createTodoList(request: CreateTodoList): Promise<TodoList> {
+  async createTodoList(request: CreateTodoList): Promise<void> {
     return await this.commandBus.execute(
       new CreateTodoListCommand(request.description, request.name),
     );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'updateTodoList')
-  async updateTodoList(request: UpdateTodoList): Promise<TodoList> {
+  async updateTodoList(request: UpdateTodoList): Promise<void> {
     return await this.commandBus.execute(
       new UpdateTodoListCommand(request.id, request.name, request.description),
     );
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'deleteTodoList')
-  async deleteTodoList(request: DeleteTodoListDto): Promise<TodoList> {
+  async deleteTodoList(request: DeleteTodoListDto): Promise<void> {
     return await this.commandBus.execute(new DeleteTodoListCommand(request.id));
   }
 

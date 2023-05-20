@@ -3,6 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { TodoQueryImplementation } from 'apps/todo/src/infrastructure/query/todo-query-implementation';
 import { FindPaginateTodoListQuery } from '../interface/find-paginate-todo-list.query';
 import { FindPaginateTodoListResult } from '../interface/result/find-paginate-todo-list-result';
+import { TodoQuery } from '../interface/todo-query';
 
 @QueryHandler(FindPaginateTodoListQuery)
 export class FindPaginateTodoList
@@ -10,7 +11,7 @@ export class FindPaginateTodoList
     IQueryHandler<FindPaginateTodoListQuery, FindPaginateTodoListResult>
 {
   @Inject(TodoQueryImplementation)
-  private readonly todoQuery: TodoQueryImplementation;
+  private readonly todoQuery: TodoQuery;
 
   async execute(
     command: FindPaginateTodoListQuery,
