@@ -6,7 +6,7 @@ import { FindAllTodoListResult } from '../interface/result/find-all-todo-list-re
 import { TodoQuery } from '../interface/todo-query';
 
 @QueryHandler(FindAllTodoListQuery)
-export class FindAllTodoList
+export class FindAllTodoListHandler
   implements IQueryHandler<FindAllTodoListQuery, FindAllTodoListResult>
 {
   @Inject(TodoQueryImplementation)

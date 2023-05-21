@@ -1,2 +1,2 @@
-MONGO:
-  url:'mongoURL'
+mongo:
+  url: 'mongodb://127.0.0.1:30001/test'

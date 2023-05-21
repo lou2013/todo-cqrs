@@ -27,7 +27,7 @@ import { DeleteTodoListCommand } from '../application/command/interfaces/delete-
 import { MoveTodoCommand } from '../application/command/interfaces/move-todo-command';
 import { UpdateTodoCommand } from '../application/command/interfaces/update-todo-command';
 import { UpdateTodoListCommand } from '../application/command/interfaces/update-todo-list-command';
-import { FindAllTodoList } from '../application/query/handler/find-all-todo-list.handler';
+import { FindAllTodoListQuery } from '../application/query/interface/find-all-todo-list.query';
 import { FindAllTodoQuery } from '../application/query/interface/find-all-todo.query';
 import { FindPaginateTodoListQuery } from '../application/query/interface/find-paginate-todo-list.query';
 import { FindPaginateTodoQuery } from '../application/query/interface/find-paginate-todo.query';
@@ -58,7 +58,7 @@ export class TodoServiceControllerImplementation
   @GrpcMethod(TODOS_SERVICE_NAME, 'findAllTodo')
   // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
   async findAllTodo(request: Empty): Promise<TodoAllDto> {
-    return { items: await this.queryBus.execute(new FindAllTodoQuery()) };
+    return await this.queryBus.execute(new FindAllTodoQuery());
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodo')
@@ -101,7 +101,7 @@ export class TodoServiceControllerImplementation
   @GrpcMethod(TODOS_SERVICE_NAME, 'findAllTodoList')
   // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
   async findAllTodoList(request: Empty): Promise<TodoListAllDto> {
-    return await this.queryBus.execute(new FindAllTodoList());
+    return await this.queryBus.execute(new FindAllTodoListQuery());
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'createTodoList')

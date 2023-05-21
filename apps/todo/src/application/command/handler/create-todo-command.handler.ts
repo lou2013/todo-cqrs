@@ -12,11 +12,11 @@ export class CreateTodoHandler
   private readonly todoRepository: TodoRepository;
 
   async execute(command: CreateTodoCommand): Promise<void> {
-    await this.todoRepository.saveTodo({
+    const todo = await this.todoRepository.saveTodo({
       ...command,
       id: this.todoRepository.newId().toString(),
-      todoList: undefined,
     });
+    await this.todoRepository.moveTodo(todo[0].id, command.todoListId);
     return;
   }
 }

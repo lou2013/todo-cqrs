@@ -11,7 +11,7 @@ export class TodoListEntity extends BaseEntity {
   @Prop({ type: String })
   description: string;
 
-  @Prop({ type: [Types.ObjectId], ref: Collection.TodoList, default: [] })
+  @Prop({ type: [Types.ObjectId], ref: Collection.Todo, default: [] })
   todos: Types.ObjectId[] | TodoEntity[];
 }
 

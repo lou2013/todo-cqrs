@@ -12,7 +12,7 @@ export class TodoEntity extends BaseEntity {
   title: string;
 
   @Prop({ type: Types.ObjectId, ref: Collection.TodoList })
-  todoList: Types.ObjectId | TodoListEntity;
+  todoListId: Types.ObjectId | TodoListEntity;
 }
 
 export const TodoEntitySchema = SchemaFactory.createForClass(TodoEntity);

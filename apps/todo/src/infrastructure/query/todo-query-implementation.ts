@@ -10,6 +10,8 @@ import { FindPaginateTodoListResult } from '../../application/query/interface/re
 import { FindPaginateTodoResult } from '../../application/query/interface/result/find-paginate-todo-result';
 import { FindTodoByIdResult } from '../../application/query/interface/result/find-todo-by-id-result';
 import { FindTodoListByIdResult } from '../../application/query/interface/result/find-todo-list-by-id-result';
+import { NotFoundError } from '../../shared/errors/not-found-error';
+import { CodeError } from '../../shared/enum/code-error.enum';
 
 @Injectable()
 export class TodoQueryImplementation implements TodoQuery {
@@ -26,7 +28,9 @@ export class TodoQueryImplementation implements TodoQuery {
       { sort: { priority: 1, _id: 1 } },
     );
 
-    return new FindAllTodoResult({ items: todos.map((t) => t.toObject()) });
+    return new FindAllTodoResult({
+      items: todos.map((t) => t.toObject({ getters: true })),
+    });
   }
 
   async findPaginatedTodo({
@@ -41,7 +45,7 @@ export class TodoQueryImplementation implements TodoQuery {
       { page, limit, sort: { priority: 1, _id: 1 } },
     );
     return new FindPaginateTodoResult({
-      items: result.docs.map((t) => t.toObject()),
+      items: result.docs.map((t) => t.toObject({ getters: true })),
       hasNextPage: result.hasNextPage,
       hasPrevPage: result.hasPrevPage,
       limit: result.limit,
@@ -49,13 +53,18 @@ export class TodoQueryImplementation implements TodoQuery {
       offset: result.offset,
       page: result.page,
       totalDocs: result.totalDocs,
-      totalPage: result.totalDocs,
+      totalPage: result.totalPages,
     });
   }
 
   async findTodoById(id: string): Promise<FindTodoByIdResult> {
     const todo = await this.todoEntity.findById(id);
-    return new FindTodoByIdResult(todo.toObject());
+    if (!todo)
+      throw new NotFoundError({
+        message: 'todo not found',
+        code: CodeError.NOT_FOUND,
+      });
+    return new FindTodoByIdResult(todo?.toObject({ getters: true }));
   }
 
   async findAllTodoList(): Promise<FindAllTodoListResult> {
@@ -67,8 +76,8 @@ export class TodoQueryImplementation implements TodoQuery {
 
     return new FindAllTodoListResult({
       items: todoLists.map((t) => ({
-        ...t.toObject(),
-        todos: t.todos.map((t) => t.toObject()),
+        ...t.toObject({ getters: true }),
+        todos: t.todos.map((t) => t.toObject({ getters: true })),
       })),
     });
   }
@@ -86,8 +95,8 @@ export class TodoQueryImplementation implements TodoQuery {
     );
     return new FindPaginateTodoListResult({
       items: result.docs.map((t) => ({
-        ...t.toObject(),
-        todos: t.todos.map((t) => t.toObject()),
+        ...t.toObject({ getters: true }),
+        todos: t.todos.map((t) => t.toObject({ getters: true })),
       })),
       hasNextPage: result.hasNextPage,
       hasPrevPage: result.hasPrevPage,
@@ -101,10 +110,19 @@ export class TodoQueryImplementation implements TodoQuery {
   }
 
   async findTodoListById(id: string): Promise<FindTodoListByIdResult> {
-    const todoList = await this.todoListEntity.findById(id);
+    const todoList = await this.todoListEntity.findById(
+      id,
+      {},
+      { populate: 'todos' },
+    );
+    if (!todoList)
+      throw new NotFoundError({
+        message: 'todoList not found',
+        code: CodeError.NOT_FOUND,
+      });
     return new FindTodoListByIdResult({
-      ...todoList.toObject(),
-      todos: todoList.todos.map((t) => t.toObject()),
+      ...todoList?.toObject({ getters: true }),
+      todos: todoList?.todos?.map((t) => t.toObject({ getters: true })),
     });
   }
 }

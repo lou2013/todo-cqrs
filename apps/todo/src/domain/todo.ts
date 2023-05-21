@@ -1,6 +1,6 @@
 export interface Todo {
   id: string;
-  todoList: string;
+  todoListId: string;
   priority: number;
   title: string;
 }

@@ -12,6 +12,14 @@ export interface PaginatedRequestDto {
 
 export interface PaginatedTodoResponseDto {
   items: Todo[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  page?: number | undefined;
+  offset?: number | undefined;
+  nextPage?: number | undefined;
+  totalDocs?: number | undefined;
+  totalPage?: number | undefined;
 }
 
 export interface FindById {

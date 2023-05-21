@@ -7,7 +7,7 @@ export class FindTodoByIdResult implements IQueryResult {
 
   readonly title: string;
 
-  readonly todoList: string;
+  readonly todoListId: string;
 
   constructor(props: FindTodoByIdResult) {
     Object.assign(this, props);

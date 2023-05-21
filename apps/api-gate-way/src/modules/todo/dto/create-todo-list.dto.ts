@@ -1,19 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from 'apps/api-gate-way/src/common/dto/base.dto';
 import { Expose } from 'class-transformer';
-import { IsInt, IsString, Min, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateTodoDto extends BaseDto {
-  @IsOptional()
-  @Expose()
-  @IsInt()
-  @Min(1)
-  @ApiProperty({ type: Number, example: 1 })
-  priority: number;
-
-  @IsOptional()
+export class CreateTodoListDto extends BaseDto {
   @Expose()
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({ type: String, example: 'test' })
-  title: string;
+  description: string;
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ type: String, example: 'test' })
+  name: string;
 }

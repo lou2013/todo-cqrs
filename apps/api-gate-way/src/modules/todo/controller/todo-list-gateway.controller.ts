@@ -7,11 +7,14 @@ import {
   Body,
   OnModuleInit,
   Inject,
+  Param,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { ClientGrpc, RpcException } from '@nestjs/microservices';
+import { ApiParam } from '@nestjs/swagger';
 import { todosServiceClient, TODOS_SERVICE_NAME } from 'lib/proto/todo/todo.pb';
-import { CreateTodoDto } from '../dto/create-todo.dto';
-import { UpdateTodoDto } from '../dto/update-todo.dto';
+import { catchError, lastValueFrom, throwError } from 'rxjs';
+import { CreateTodoListDto } from '../dto/create-todo-list.dto';
+import { GetTodoListDto } from '../dto/get-todo-list.dto';
 
 @Controller('/list')
 export class TodoListGateWayController implements OnModuleInit {
@@ -25,14 +28,17 @@ export class TodoListGateWayController implements OnModuleInit {
       this.client.getService<todosServiceClient>(TODOS_SERVICE_NAME);
   }
 
-  getHello(): string {
-    return 'Hello Worlds!';
-  }
-
   @Get('/:id')
-  findById(): string {
-    return '';
-    // return this.appService.getHello();
+  @ApiParam({ name: 'id' })
+  async findById(@Param('id') id: string): Promise<GetTodoListDto> {
+    const data = await lastValueFrom(
+      this.service.findTodoListById({ id }).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return new GetTodoListDto(data);
   }
 
   @Get('/')
@@ -48,13 +54,19 @@ export class TodoListGateWayController implements OnModuleInit {
   }
 
   @Post('/')
-  create(@Body() createDto: CreateTodoDto): string {
-    return '';
-    // return this.appService.getHello();
+  async create(@Body() createDto: CreateTodoListDto): Promise<void> {
+    await lastValueFrom(
+      this.service.createTodoList({ ...createDto }).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return;
   }
 
   @Patch('/:id')
-  update(@Body() updateDto: UpdateTodoDto): string {
+  update(@Body() updateDto: any): string {
     return '';
     // return this.appService.getHello();
   }

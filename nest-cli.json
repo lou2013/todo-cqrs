@@ -28,6 +28,14 @@
       "entryFile": "main",
       "sourceRoot": "apps/api-gate-way/src",
       "compilerOptions": {
+        "plugins": [
+          {
+            "name": "@nestjs/swagger",
+            "options": {
+              "introspectComments": true
+            }
+          }
+        ],
         "tsConfigPath": "apps/api-gate-way/tsconfig.app.json"
       }
     },
@@ -40,8 +48,9 @@
         "tsConfigPath": "apps/todo/tsconfig.app.json",
         "assets": [
           {
-            "include": "**/*.yml",
-            "watchAssets": true
+            "include": "/shared/configs/config.yml",
+            "watchAssets": true,
+            "outDir": "./dist/apps/todo/src"
           }
         ]
       }

@@ -28,7 +28,17 @@ message PaginatedRequestDto {
   int32 page = 2;
 }
 
-message PaginatedTodoResponseDto { repeated Todo items = 1; }
+message PaginatedTodoResponseDto {
+  repeated Todo items = 1;
+  bool hasNextPage = 2;
+  bool hasPrevPage = 3;
+  int32 limit = 4;
+  optional int32 page = 5;
+  optional int32 offset = 6;
+  optional int32 nextPage = 7;
+  optional int32 totalDocs = 8;
+  optional int32 totalPage = 9;
+}
 
 message FindById { string id = 1; }
 

@@ -1,4 +1,4 @@
 export enum Collection {
-  Todo = 'Todo',
-  TodoList = 'TodoList',
+  Todo = 'TodoEntity',
+  TodoList = 'TodoListEntity',
 }

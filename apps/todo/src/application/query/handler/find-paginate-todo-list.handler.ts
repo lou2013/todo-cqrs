@@ -6,7 +6,7 @@ import { FindPaginateTodoListResult } from '../interface/result/find-paginate-to
 import { TodoQuery } from '../interface/todo-query';
 
 @QueryHandler(FindPaginateTodoListQuery)
-export class FindPaginateTodoList
+export class FindPaginateTodoListHandler
   implements
     IQueryHandler<FindPaginateTodoListQuery, FindPaginateTodoListResult>
 {
