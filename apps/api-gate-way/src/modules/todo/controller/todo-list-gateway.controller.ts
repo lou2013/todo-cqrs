@@ -13,8 +13,8 @@ import { todosServiceClient, TODOS_SERVICE_NAME } from 'lib/proto/todo/todo.pb';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
-@Controller()
-export class TodoGateWayController implements OnModuleInit {
+@Controller('/list')
+export class TodoListGateWayController implements OnModuleInit {
   private service: todosServiceClient;
 
   @Inject(TODOS_SERVICE_NAME)
@@ -26,7 +26,7 @@ export class TodoGateWayController implements OnModuleInit {
   }
 
   getHello(): string {
-    return 'Hello World!';
+    return 'Hello Worlds!';
   }
 
   @Get('/:id')

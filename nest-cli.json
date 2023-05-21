@@ -3,8 +3,22 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "apps/api-gate-way/src",
   "compilerOptions": {
-    "tsConfigPath": "tsconfig.json"
+    "tsConfigPath": "tsconfig.json",
+    "assets": [
+      {
+        "include": "**/*.proto",
+        "watchAssets": true
+      }
+    ]
   },
+  "plugins": [
+    {
+      "name": "@nestjs/swagger",
+      "options": {
+        "introspectComments": true
+      }
+    }
+  ],
   "monorepo": true,
   "root": "apps/api-gate-way",
   "projects": {
@@ -26,8 +40,7 @@
         "tsConfigPath": "apps/todo/tsconfig.app.json",
         "assets": [
           {
-            "include": "./shared/configs/*.yml",
-            "outDir": "./dist/apps/todo/shared/configs",
+            "include": "**/*.yml",
             "watchAssets": true
           }
         ]
