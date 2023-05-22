@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TodoQuery } from '../../application/query/interface/todo-query';
+import { TodoQuery } from '../../domain/todo-query';
 import { TodoEntity } from '../entity/todo-entity';
 import { PaginateModel } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';

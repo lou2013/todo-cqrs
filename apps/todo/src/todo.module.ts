@@ -27,6 +27,7 @@ import { FindAllTodoListHandler } from './application/query/handler/find-all-tod
 import { FindPaginateTodoHandler } from './application/query/handler/find-paginate-todo.handler';
 import { FindTodoListByIdHandler } from './application/query/handler/find-todo-list-by-id.handler';
 import { FindPaginateTodoListHandler } from './application/query/handler/find-paginate-todo-list.handler';
+import { MoveTodoCommandHandler } from './application/command/handler/move-todo-command.handler';
 
 const infrastructure = [TodoQueryImplementation, TodoRepositoryImplementation];
 const application = [
@@ -42,6 +43,7 @@ const application = [
   FindAllTodoHandler,
   CreateTodoHandler,
   DeleteTodoHandler,
+  MoveTodoCommandHandler,
 ];
 @Module({
   imports: [

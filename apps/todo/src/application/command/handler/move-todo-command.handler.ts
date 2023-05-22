@@ -5,7 +5,7 @@ import { TodoRepository } from 'apps/todo/src/domain/todo-repository';
 import { MoveTodoCommand } from '../interfaces/move-todo-command';
 
 @CommandHandler(MoveTodoCommand)
-export class CreateTodoHandler
+export class MoveTodoCommandHandler
   implements ICommandHandler<MoveTodoCommand, void>
 {
   @Inject(TodoRepositoryImplementation)

@@ -10,6 +10,7 @@ import {
   FindById,
   MoveTodoDto,
   PaginatedRequestDto,
+  PaginatedTodoListResponseDto,
   PaginatedTodoResponseDto,
   Todo,
   TodoAllDto,
@@ -43,7 +44,7 @@ export class TodoServiceControllerImplementation
     private readonly queryBus: QueryBus,
   ) {}
 
-  @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
+  // @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
   async moveTodo(request: MoveTodoDto): Promise<void> {
     await this.commandBus.execute(
       new MoveTodoCommand(request.todoId, request.newTodoListId),
@@ -124,8 +125,10 @@ export class TodoServiceControllerImplementation
   }
 
   @GrpcMethod(TODOS_SERVICE_NAME, 'findPaginatedTodoList')
-  async findPaginatedTodoList(request: PaginatedRequestDto): Promise<TodoList> {
-    return await this.commandBus.execute(
+  async findPaginatedTodoList(
+    request: PaginatedRequestDto,
+  ): Promise<PaginatedTodoListResponseDto> {
+    return await this.queryBus.execute(
       new FindPaginateTodoListQuery(request.page, request.limit),
     );
   }

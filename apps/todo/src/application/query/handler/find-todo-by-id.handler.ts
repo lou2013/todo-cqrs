@@ -3,7 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { TodoQueryImplementation } from 'apps/todo/src/infrastructure/query/todo-query-implementation';
 import { FindTodoByIdQuery } from '../interface/find-todo-by-id.query';
 import { FindTodoByIdResult } from '../interface/result/find-todo-by-id-result';
-import { TodoQuery } from '../interface/todo-query';
+import { TodoQuery } from '../../../domain/todo-query';
 
 @QueryHandler(FindTodoByIdQuery)
 export class FindTodoByIdHandler

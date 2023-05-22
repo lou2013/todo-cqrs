@@ -22,6 +22,18 @@ export interface PaginatedTodoResponseDto {
   totalPage?: number | undefined;
 }
 
+export interface PaginatedTodoListResponseDto {
+  items: TodoList[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  limit: number;
+  page?: number | undefined;
+  offset?: number | undefined;
+  nextPage?: number | undefined;
+  totalDocs?: number | undefined;
+  totalPage?: number | undefined;
+}
+
 export interface FindById {
   id: string;
 }
@@ -115,7 +127,7 @@ export interface todosServiceClient {
 
   deleteTodoList(request: DeleteTodoListDto): Observable<Empty>;
 
-  findPaginatedTodoList(request: PaginatedRequestDto): Observable<TodoList>;
+  findPaginatedTodoList(request: PaginatedRequestDto): Observable<PaginatedTodoListResponseDto>;
 }
 
 export interface todosServiceController {
@@ -149,7 +161,9 @@ export interface todosServiceController {
 
   deleteTodoList(request: DeleteTodoListDto): void;
 
-  findPaginatedTodoList(request: PaginatedRequestDto): Promise<TodoList> | Observable<TodoList> | TodoList;
+  findPaginatedTodoList(
+    request: PaginatedRequestDto,
+  ): Promise<PaginatedTodoListResponseDto> | Observable<PaginatedTodoListResponseDto> | PaginatedTodoListResponseDto;
 }
 
 export function todosServiceControllerMethods() {

@@ -7,17 +7,18 @@ import {
   Body,
   OnModuleInit,
   Inject,
-  Param,
   Query,
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { MongoIdParam } from 'apps/api-gate-way/src/common/decorator/mongo-id-parameter.decorator';
 import { todosServiceClient, TODOS_SERVICE_NAME } from 'lib/proto/todo/todo.pb';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { CreateTodoDto } from '../dto/create-todo.dto';
 import { GetAllTodoDto } from '../dto/get-all-todo.dto';
 import { GetPaginateTodoDto } from '../dto/get-paginate-todo.dto';
 import { GetTodoDto } from '../dto/get-todo.dto';
+import { MoveTodoDto } from '../dto/move-todo.dto';
 import { PaginateRequestDto } from '../dto/paginate-request.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
@@ -45,7 +46,30 @@ export class TodoGateWayController implements OnModuleInit {
     return;
   }
 
+  @Post('/move/:id')
+  @ApiParam({ name: 'id' })
+  async move(
+    @Body() Dto: MoveTodoDto,
+    @MongoIdParam('id') id: string,
+  ): Promise<void> {
+    try {
+      await lastValueFrom(
+        this.service
+          .moveTodo({ todoId: id, newTodoListId: Dto.newTodoListId })
+          .pipe(
+            catchError((err) => {
+              return throwError(() => new RpcException(err));
+            }),
+          ),
+      );
+      return;
+    } catch (error) {
+      console.log(error instanceof RpcException);
+    }
+  }
+
   @ApiQuery({ type: PaginateRequestDto })
+  @ApiResponse({ type: GetPaginateTodoDto })
   @Get('/paginate')
   async findPaginate(
     @Query() paginateRequestDto: PaginateRequestDto,
@@ -63,7 +87,7 @@ export class TodoGateWayController implements OnModuleInit {
   @Get('/:id')
   @ApiParam({ name: 'id' })
   @ApiResponse({ type: GetTodoDto })
-  async findById(@Param('id') id: string): Promise<GetTodoDto> {
+  async findById(@MongoIdParam('id') id: string): Promise<GetTodoDto> {
     const data = await lastValueFrom(
       this.service.findTodoById({ id }).pipe(
         catchError((err) => {
@@ -91,7 +115,7 @@ export class TodoGateWayController implements OnModuleInit {
   @ApiParam({ name: 'id' })
   async update(
     @Body() updateDto: UpdateTodoDto,
-    @Param('id') id: string,
+    @MongoIdParam('id') id: string,
   ): Promise<void> {
     await lastValueFrom(
       this.service.updateTodo({ ...updateDto, id }).pipe(
@@ -105,7 +129,7 @@ export class TodoGateWayController implements OnModuleInit {
 
   @Delete('/:id')
   @ApiParam({ name: 'id' })
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@MongoIdParam('id') id: string): Promise<void> {
     await lastValueFrom(
       this.service.deleteTodo({ id }).pipe(
         catchError((err) => {

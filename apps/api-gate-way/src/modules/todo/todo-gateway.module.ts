@@ -32,7 +32,7 @@ import { TodoListGateWayController } from './controller/todo-list-gateway.contro
       ],
     }),
   ],
-  controllers: [TodoGateWayController, TodoListGateWayController],
+  controllers: [TodoListGateWayController, TodoGateWayController],
   providers: [],
 })
 export class TodoGateWayModule {}

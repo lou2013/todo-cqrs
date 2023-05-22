@@ -3,7 +3,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { TodoQueryImplementation } from 'apps/todo/src/infrastructure/query/todo-query-implementation';
 import { FindPaginateTodoQuery } from '../interface/find-paginate-todo.query';
 import { FindPaginateTodoResult } from '../interface/result/find-paginate-todo-result';
-import { TodoQuery } from '../interface/todo-query';
+import { TodoQuery } from '../../../domain/todo-query';
 
 @QueryHandler(FindPaginateTodoQuery)
 export class FindPaginateTodoHandler

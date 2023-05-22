@@ -7,14 +7,19 @@ import {
   Body,
   OnModuleInit,
   Inject,
-  Param,
+  Query,
 } from '@nestjs/common';
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
-import { ApiParam } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { MongoIdParam } from 'apps/api-gate-way/src/common/decorator/mongo-id-parameter.decorator';
 import { todosServiceClient, TODOS_SERVICE_NAME } from 'lib/proto/todo/todo.pb';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { CreateTodoListDto } from '../dto/create-todo-list.dto';
+import { GetAllTodoListDto } from '../dto/get-all-todo-list.dto';
+import { GetPaginatedTodoListDto } from '../dto/get-paginated-todo-list.dto';
 import { GetTodoListDto } from '../dto/get-todo-list.dto';
+import { PaginateRequestDto } from '../dto/paginate-request.dto';
+import { UpdateTodoDto } from '../dto/update-todo.dto';
 
 @Controller('/list')
 export class TodoListGateWayController implements OnModuleInit {
@@ -28,9 +33,25 @@ export class TodoListGateWayController implements OnModuleInit {
       this.client.getService<todosServiceClient>(TODOS_SERVICE_NAME);
   }
 
+  @Get('/paginate')
+  @ApiQuery({ type: PaginateRequestDto })
+  @ApiResponse({ type: GetPaginatedTodoListDto })
+  async findPaginate(
+    @Query() query: PaginateRequestDto,
+  ): Promise<GetPaginatedTodoListDto> {
+    const data = await lastValueFrom(
+      this.service.findPaginatedTodoList(query).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return new GetPaginatedTodoListDto(data);
+  }
+
   @Get('/:id')
   @ApiParam({ name: 'id' })
-  async findById(@Param('id') id: string): Promise<GetTodoListDto> {
+  async findById(@MongoIdParam('id') id: string): Promise<GetTodoListDto> {
     const data = await lastValueFrom(
       this.service.findTodoListById({ id }).pipe(
         catchError((err) => {
@@ -42,15 +63,15 @@ export class TodoListGateWayController implements OnModuleInit {
   }
 
   @Get('/')
-  findAll(): string {
-    return '';
-    // return this.appService.getHello();
-  }
-
-  @Get('/')
-  findPaginate(): string {
-    return '';
-    // return this.appService.getHello();
+  async findAll(): Promise<GetAllTodoListDto> {
+    const data = await lastValueFrom(
+      this.service.findAllTodoList({}).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return new GetAllTodoListDto(data);
   }
 
   @Post('/')
@@ -66,14 +87,29 @@ export class TodoListGateWayController implements OnModuleInit {
   }
 
   @Patch('/:id')
-  update(@Body() updateDto: any): string {
-    return '';
-    // return this.appService.getHello();
+  async update(
+    @Body() updateDto: UpdateTodoDto,
+    @MongoIdParam('id') id: string,
+  ): Promise<void> {
+    await lastValueFrom(
+      this.service.updateTodo({ ...updateDto, id }).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return;
   }
 
   @Delete('/:id')
-  delete(): string {
-    return '';
-    // return this.appService.getHello();
+  async delete(@MongoIdParam('id') id: string): Promise<void> {
+    await lastValueFrom(
+      this.service.deleteTodoList({ id }).pipe(
+        catchError((err) => {
+          return throwError(() => new RpcException(err));
+        }),
+      ),
+    );
+    return;
   }
 }

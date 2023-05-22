@@ -20,7 +20,8 @@ service todosService {
   rpc createTodoList(CreateTodoList) returns (google.protobuf.Empty);
   rpc updateTodoList(UpdateTodoList) returns (google.protobuf.Empty);
   rpc deleteTodoList(DeleteTodoListDto) returns (google.protobuf.Empty);
-  rpc findPaginatedTodoList(PaginatedRequestDto) returns (TodoList);
+  rpc findPaginatedTodoList(PaginatedRequestDto)
+      returns (PaginatedTodoListResponseDto);
 }
 
 message PaginatedRequestDto {
@@ -30,6 +31,18 @@ message PaginatedRequestDto {
 
 message PaginatedTodoResponseDto {
   repeated Todo items = 1;
+  bool hasNextPage = 2;
+  bool hasPrevPage = 3;
+  int32 limit = 4;
+  optional int32 page = 5;
+  optional int32 offset = 6;
+  optional int32 nextPage = 7;
+  optional int32 totalDocs = 8;
+  optional int32 totalPage = 9;
+}
+
+message PaginatedTodoListResponseDto {
+  repeated TodoList items = 1;
   bool hasNextPage = 2;
   bool hasPrevPage = 3;
   int32 limit = 4;

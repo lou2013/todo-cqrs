@@ -11,7 +11,7 @@ import { isArray } from 'class-validator';
 import { NotFoundError } from '../../shared/errors/not-found-error';
 import { CodeError } from '../../shared/enum/code-error.enum';
 import { TodoQueryImplementation } from '../query/todo-query-implementation';
-import { TodoQuery } from '../../application/query/interface/todo-query';
+import { TodoQuery } from '../../domain/todo-query';
 @Injectable()
 export class TodoRepositoryImplementation implements TodoRepository {
   @InjectModel(TodoEntity.name)
