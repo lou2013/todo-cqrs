@@ -5,7 +5,6 @@ import { join } from 'path';
 import { protoNames } from '../../../lib/const/proto-names';
 import { TODO_PACKAGE_NAME } from 'lib/proto/todo/todo.pb';
 import { TodoErrorFilter } from './shared/filter/error.filter';
-
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     TodoModule,

@@ -16,7 +16,6 @@ import { MongoConfig } from '../configs/interfaces/mongo-config.interface';
         return {
           uri: config.url,
           autoIndex: true,
-          replicaSet: 'ray-replica-set',
           connectionFactory: (connection) => {
             connection.plugin(paginatePlugin);
             return connection;

@@ -1,2 +1,2 @@
 mongo:
-  url: 'mongodb://127.0.0.1:30001/test?replicaSet=ray-replica-set'
+  url: 'mongodb://ray_mongo1:27017/test?replicaSet=rs1'

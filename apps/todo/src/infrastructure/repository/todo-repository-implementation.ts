@@ -52,6 +52,7 @@ export class TodoRepositoryImplementation implements TodoRepository {
   async moveTodo(id: string, toTodoListId: string): Promise<Todo> {
     const todo = await this.todoQueryImplementation.findTodoById(id);
     const session = await this.databaseConnection.startSession({});
+    session.startTransaction({});
     try {
       if (!todo)
         throw new NotFoundException({
