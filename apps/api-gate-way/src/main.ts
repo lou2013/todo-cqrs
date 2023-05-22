@@ -8,6 +8,7 @@ import {
   ParameterObject,
   ReferenceObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
+import { ErrorFilter } from './common/filter/error.filter';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(GateWayModule);
@@ -19,6 +20,7 @@ async function bootstrap(): Promise<void> {
     .setVersion('v1')
     .addBearerAuth();
   const openApiObject = SwaggerModule.createDocument(app, document.build());
+  app.useGlobalFilters(new ErrorFilter());
   SwaggerModule.setup('docs/index', app, fixSwaggerQuery(openApiObject), {});
   await app.listen(3000);
 }

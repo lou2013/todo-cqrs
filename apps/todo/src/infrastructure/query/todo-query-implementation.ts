@@ -10,8 +10,7 @@ import { FindPaginateTodoListResult } from '../../application/query/interface/re
 import { FindPaginateTodoResult } from '../../application/query/interface/result/find-paginate-todo-result';
 import { FindTodoByIdResult } from '../../application/query/interface/result/find-todo-by-id-result';
 import { FindTodoListByIdResult } from '../../application/query/interface/result/find-todo-list-by-id-result';
-import { NotFoundError } from '../../shared/errors/not-found-error';
-import { CodeError } from '../../shared/enum/code-error.enum';
+import { NotFoundException } from '../../shared/exceptions/not-found.exception';
 
 @Injectable()
 export class TodoQueryImplementation implements TodoQuery {
@@ -60,9 +59,8 @@ export class TodoQueryImplementation implements TodoQuery {
   async findTodoById(id: string): Promise<FindTodoByIdResult> {
     const todo = await this.todoEntity.findById(id);
     if (!todo)
-      throw new NotFoundError({
+      throw new NotFoundException({
         message: 'todo not found',
-        code: CodeError.NOT_FOUND,
       });
     return new FindTodoByIdResult(todo?.toObject({ getters: true }));
   }
@@ -116,9 +114,8 @@ export class TodoQueryImplementation implements TodoQuery {
       { populate: 'todos' },
     );
     if (!todoList)
-      throw new NotFoundError({
+      throw new NotFoundException({
         message: 'todoList not found',
-        code: CodeError.NOT_FOUND,
       });
     return new FindTodoListByIdResult({
       ...todoList?.toObject({ getters: true }),

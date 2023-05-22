@@ -8,10 +8,9 @@ import { TodoEntity } from '../entity/todo-entity';
 import { TodoListEntity } from '../entity/todo-list-entity';
 import * as mongoose from 'mongoose';
 import { isArray } from 'class-validator';
-import { NotFoundError } from '../../shared/errors/not-found-error';
-import { CodeError } from '../../shared/enum/code-error.enum';
 import { TodoQueryImplementation } from '../query/todo-query-implementation';
 import { TodoQuery } from '../../domain/todo-query';
+import { NotFoundException } from '../../shared/exceptions/not-found.exception';
 @Injectable()
 export class TodoRepositoryImplementation implements TodoRepository {
   @InjectModel(TodoEntity.name)
@@ -55,9 +54,8 @@ export class TodoRepositoryImplementation implements TodoRepository {
     const session = await this.databaseConnection.startSession({});
     try {
       if (!todo)
-        throw new NotFoundError({
+        throw new NotFoundException({
           message: 'todo Not found',
-          code: CodeError.NOT_FOUND,
         });
       if (todo.todoListId) {
         await this.todoListEntity.findOneAndUpdate(
@@ -72,9 +70,8 @@ export class TodoRepositoryImplementation implements TodoRepository {
         { session },
       );
       if (!newTodoList)
-        throw new NotFoundError({
+        throw new NotFoundException({
           message: 'todoList Not found',
-          code: CodeError.NOT_FOUND,
         });
       const newTodo = await this.todoEntity.findOneAndUpdate(
         { _id: id },

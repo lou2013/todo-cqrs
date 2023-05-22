@@ -4,15 +4,15 @@ services:
   ray_mongo:
     image: mongo:4.4.6
     container_name: ray_mongo
-    # command: ["--replSet", "ray-replica-set", "--bind_ip_all", "--port", "30001"]
+    command: ["--replSet", "ray-replica-set", "--bind_ip_all", "--port", "30001"]
     volumes:
       - ray_mongo:/data/db
     ports:
-      - 30001:27017
-    # healthcheck:
-    #   test: test $$(echo "rs.initiate({_id:'ray-replica-set',members:[{_id:0,host:\"ray_mongo:30001\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
-    #   interval: 10s
-      # start_period: 30s
+      - 30001:30001
+    healthcheck:
+      test: test $$(echo "rs.initiate({_id:'ray-replica-set',members:[{_id:0,host:\"ray_mongo:30001\"}]}).ok || rs.status().ok" | mongo --port 30001 --quiet) -eq 1
+      interval: 10s
+      start_period: 30s
 
 
 

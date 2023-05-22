@@ -1,3 +1,3 @@
-export enum CodeError {
-  NOT_FOUND = '404',
-}
+export const CodeError = {
+  NOT_FOUND: 5,
+};

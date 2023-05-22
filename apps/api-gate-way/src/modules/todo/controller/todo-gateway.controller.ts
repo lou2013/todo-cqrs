@@ -52,20 +52,16 @@ export class TodoGateWayController implements OnModuleInit {
     @Body() Dto: MoveTodoDto,
     @MongoIdParam('id') id: string,
   ): Promise<void> {
-    try {
-      await lastValueFrom(
-        this.service
-          .moveTodo({ todoId: id, newTodoListId: Dto.newTodoListId })
-          .pipe(
-            catchError((err) => {
-              return throwError(() => new RpcException(err));
-            }),
-          ),
-      );
-      return;
-    } catch (error) {
-      console.log(error instanceof RpcException);
-    }
+    await lastValueFrom(
+      this.service
+        .moveTodo({ todoId: id, newTodoListId: Dto.newTodoListId })
+        .pipe(
+          catchError((err) => {
+            return throwError(() => new RpcException(err));
+          }),
+        ),
+    );
+    return;
   }
 
   @ApiQuery({ type: PaginateRequestDto })
