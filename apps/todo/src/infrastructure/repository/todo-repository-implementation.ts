@@ -46,18 +46,18 @@ export class TodoRepositoryImplementation implements TodoRepository {
         { $set: { ...data } },
         { new: true },
       )
-    ).toObject({ getters: true });
+    )?.toObject({ getters: true });
   }
 
   async moveTodo(id: string, toTodoListId: string): Promise<Todo> {
     const todo = await this.todoQueryImplementation.findTodoById(id);
+    if (!todo)
+      throw new NotFoundException({
+        message: 'todo Not found',
+      });
     const session = await this.databaseConnection.startSession({});
     session.startTransaction({});
     try {
-      if (!todo)
-        throw new NotFoundException({
-          message: 'todo Not found',
-        });
       if (todo.todoListId) {
         await this.todoListEntity.findOneAndUpdate(
           { _id: todo.todoListId },
@@ -114,8 +114,24 @@ export class TodoRepositoryImplementation implements TodoRepository {
   }
 
   async deleteTodoList(id: string): Promise<TodoList> {
-    return (await this.todoListEntity.findOneAndDelete({ _id: id })).toObject({
-      getters: true,
-    });
+    const session = await this.databaseConnection.startSession({});
+    session.startTransaction();
+    try {
+      const todoList = await this.todoListEntity.findOneAndDelete(
+        { _id: id },
+        { populate: 'todos', session },
+      );
+      await this.todoEntity.deleteMany(
+        {
+          _id: { $in: [todoList?.todos?.map((todo) => todo.id)] },
+        },
+        { session },
+      );
+      await session.commitTransaction();
+      return todoList?.toObject({ getters: true });
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    }
   }
 }

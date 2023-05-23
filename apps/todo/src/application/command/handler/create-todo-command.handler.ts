@@ -1,8 +1,8 @@
 import { Inject } from '@nestjs/common';
+import { TodoQueryImplementation } from 'apps/todo/src/infrastructure/query/todo-query-implementation';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { TodoQuery } from 'apps/todo/src/domain/todo-query';
 import { TodoRepository } from 'apps/todo/src/domain/todo-repository';
-import { TodoQueryImplementation } from 'apps/todo/src/infrastructure/query/todo-query-implementation';
 import { TodoRepositoryImplementation } from 'apps/todo/src/infrastructure/repository/todo-repository-implementation';
 import { CreateTodoCommand } from '../interfaces/create-todo-command';
 

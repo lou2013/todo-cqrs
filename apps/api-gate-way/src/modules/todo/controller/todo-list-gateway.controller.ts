@@ -12,13 +12,18 @@ import {
 import { ClientGrpc, RpcException } from '@nestjs/microservices';
 import { ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { MongoIdParam } from 'apps/api-gate-way/src/common/decorator/mongo-id-parameter.decorator';
-import { todosServiceClient, TODOS_SERVICE_NAME } from 'lib/proto/todo/todo.pb';
+import {
+  todosServiceClient,
+  TODOS_SERVICE_NAME,
+  UpdateTodoList,
+} from 'lib/proto/todo/todo.pb';
 import { catchError, lastValueFrom, throwError } from 'rxjs';
 import { CreateTodoListDto } from '../dto/create-todo-list.dto';
 import { GetAllTodoListDto } from '../dto/get-all-todo-list.dto';
 import { GetPaginatedTodoListDto } from '../dto/get-paginated-todo-list.dto';
 import { GetTodoListDto } from '../dto/get-todo-list.dto';
 import { PaginateRequestDto } from '../dto/paginate-request.dto';
+import { UpdateTodoListDto } from '../dto/update-todo-list.dto';
 import { UpdateTodoDto } from '../dto/update-todo.dto';
 
 @Controller('/list')
@@ -87,12 +92,13 @@ export class TodoListGateWayController implements OnModuleInit {
   }
 
   @Patch('/:id')
+  @ApiParam({ name: 'id' })
   async update(
-    @Body() updateDto: UpdateTodoDto,
+    @Body() updateDto: UpdateTodoListDto,
     @MongoIdParam('id') id: string,
   ): Promise<void> {
     await lastValueFrom(
-      this.service.updateTodo({ ...updateDto, id }).pipe(
+      this.service.updateTodoList({ ...updateDto, id }).pipe(
         catchError((err) => {
           return throwError(() => new RpcException(err));
         }),
@@ -102,6 +108,7 @@ export class TodoListGateWayController implements OnModuleInit {
   }
 
   @Delete('/:id')
+  @ApiParam({ name: 'id' })
   async delete(@MongoIdParam('id') id: string): Promise<void> {
     await lastValueFrom(
       this.service.deleteTodoList({ id }).pipe(

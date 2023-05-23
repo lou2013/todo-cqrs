@@ -4,6 +4,8 @@ import { BaseException } from '../exceptions/base.exception';
 
 export class TodoErrorFilter implements RpcExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost): Observable<any> {
+    console.log(exception);
+
     let message = `internal server error`;
     let code = 500;
     if (exception instanceof BaseException) {

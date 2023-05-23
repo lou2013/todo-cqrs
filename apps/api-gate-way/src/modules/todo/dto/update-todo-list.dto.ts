@@ -3,7 +3,7 @@ import { BaseDto } from 'apps/api-gate-way/src/common/dto/base.dto';
 import { Expose } from 'class-transformer';
 import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
-export class UpdateTodoDto extends BaseDto {
+export class UpdateTodoListDto extends BaseDto {
   @IsOptional()
   @Expose()
   @IsString()

@@ -10,7 +10,7 @@ export class ErrorFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse<Response>();
     let message: string;
 
-    let code: number;
+    let code: number = 500;
     if (exception instanceof RpcException) {
       if (
         isJSON(
@@ -30,7 +30,7 @@ export class ErrorFilter implements ExceptionFilter {
             }
           ).details,
         ) as unknown as { message: string; code: number; err: unknown };
-        code = GRPC_TO_HTTP_CODE[data.code];
+        code = GRPC_TO_HTTP_CODE[data.code] ?? 500;
         message = data.message;
       } else {
         message = GRPC_CODE_MESSAGES[exception.message.split(' ')[0]];
