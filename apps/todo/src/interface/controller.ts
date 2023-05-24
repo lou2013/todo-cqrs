@@ -44,7 +44,7 @@ export class TodoServiceControllerImplementation
     private readonly queryBus: QueryBus,
   ) {}
 
-  // @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
+  @GrpcMethod(TODOS_SERVICE_NAME, 'moveTodo')
   async moveTodo(request: MoveTodoDto): Promise<void> {
     await this.commandBus.execute(
       new MoveTodoCommand(request.todoId, request.newTodoListId),
