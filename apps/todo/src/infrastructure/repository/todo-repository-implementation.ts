@@ -121,8 +121,6 @@ export class TodoRepositoryImplementation implements TodoRepository {
         { _id: id },
         { populate: 'todos', session },
       );
-      console.log(todoList);
-
       await this.todoEntity.deleteMany(
         {
           _id: { $in: todoList?.todos?.map((todo) => todo.id) },
